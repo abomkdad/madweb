@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MAD — صفحتي الرئيسية</title>
+  <meta name="description" content="صفحة بداية شخصية بأسلوب Google مع اختصارات غير محدودة قابلة للحفظ محليًا أو عبر ملف ICONTEXT على GitHub." />
+  <style>
+    :root{
+      --bg1:#0e0f12; --bg2:#1a1c22; --fg:#e8eaed; --muted:#a0a4ab; --glass:rgba(255,255,255,.06);
+      --acc:#5aa9ff; --acc2:#9f7aea; --tile:#14161b; --tileHover:#1c1f26;
+      --ring: rgba(90,169,255,.5);
+    }
+    [data-theme="light"]{
+      --bg1:#f6f7fb; --bg2:#eceef5; --fg:#151718; --muted:#50545a; --glass:rgba(0,0,0,.06);
+      --acc:#0b61ff; --acc2:#6a4cff; --tile:#ffffff; --tileHover:#f3f5fb;
+      --ring: rgba(11,97,255,.35);
+    }
+    html,body{height:100%}
+    body{
+      margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, "Noto Naskh Arabic UI", Tahoma, Arial, sans-serif;
+      color:var(--fg);
+      background: radial-gradient(1200px 800px at 20% 10%, rgba(159,122,234,.15), transparent 60%),
+                  radial-gradient(1000px 700px at 80% 20%, rgba(90,169,255,.15), transparent 60%),
+                  linear-gradient(180deg, var(--bg1), var(--bg2));
+      background-attachment: fixed;
+    }
+    .wrap{display:grid; grid-template-rows:auto 1fr auto; min-height:100%;}
+    header{display:flex; align-items:center; justify-content:space-between; gap:12px; padding:16px clamp(12px, 3vw, 28px);}    
+    .toolbar{display:flex; align-items:center; gap:10px; flex-wrap:wrap}
+    .btn{display:inline-flex; align-items:center; gap:8px; padding:10px 12px; border:1px solid transparent; border-radius:14px; background:var(--glass); color:var(--fg); cursor:pointer; backdrop-filter: blur(8px); transition: .2s ease; text-decoration:none; font-size:14px;}
+    .btn:hover{transform: translateY(-1px); background:color-mix(in oklab, var(--glass) 70%, var(--tile) 30%)}
+    .btn:focus{outline:none; box-shadow:0 0 0 3px var(--ring)}
+    .icon{width:18px; height:18px; display:inline-block;}
+    .logo{display:flex; align-items:center; gap:12px; font-weight:800; letter-spacing:.5px;}
+    .logo .mark{font-size:20px; background: linear-gradient(90deg, var(--acc), var(--acc2)); -webkit-background-clip:text; background-clip:text; color:transparent}
+    .clock{font-variant-numeric: tabular-nums; opacity:.9}
+
+    main{display:grid; place-items:center; padding: clamp(12px, 3vw, 28px);}
+    .center{max-width:960px; width:min(960px, 96vw);}
+    .brand{display:flex; flex-direction:column; align-items:center; gap:16px; margin:32px 0 18px}
+    .brand h1{margin:0; font-size: clamp(36px, 8vw, 68px); line-height:1; font-weight:900; letter-spacing:1px; background: linear-gradient(90deg, #b3d4ff, #e9d5ff); -webkit-background-clip:text; background-clip:text; color:transparent; filter: drop-shadow(0 6px 22px rgba(90,169,255,.15));}
+    .brand small{color:var(--muted)}
+
+    /* Search */
+    .searchBox{display:flex; align-items:center; gap:10px; padding:10px; border-radius:18px; background:var(--glass); backdrop-filter: blur(10px); border:1px solid rgba(255,255,255,.08); box-shadow: 0 8px 30px rgba(0,0,0,.22);}
+    .engine{padding:10px; border-radius:12px; border:1px solid rgba(255,255,255,.07); background:var(--tile); color:var(--fg)}
+    .search{flex:1; display:flex; align-items:center; gap:8px; padding:6px 10px; border-radius:12px; background:var(--tile); border:1px solid rgba(255,255,255,.07)}
+    .search input{flex:1; font-size:18px; padding:10px 8px; border:0; background:transparent; color:var(--fg); outline:none}
+    .go{padding:12px 16px; border-radius:12px; border:1px solid rgba(255,255,255,.07); background:linear-gradient(90deg,var(--acc),var(--acc2)); color:#fff; font-weight:700; cursor:pointer}
+    .go:hover{filter:brightness(1.05)}
+
+    /* Grid */
+    .grid{display:grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap:14px; margin:22px 0 10px}
+    .tile{position:relative; display:flex; flex-direction:column; gap:10px; align-items:center; justify-content:center; padding:16px; border-radius:18px; background:var(--tile); border:1px solid rgba(255,255,255,.08); min-height:110px; cursor:grab; user-select:none; transition:.18s ease;}
+    .tile:hover{background:var(--tileHover); transform: translateY(-1px)}
+    .tile:active{cursor:grabbing}
+    .tile .fav{width:36px; height:36px; border-radius:10px; overflow:hidden; background:#fff; display:grid; place-items:center}
+    .tile .fav img{width:100%; height:100%; object-fit:cover}
+    .tile .label{font-size:14px; text-align:center; line-height:1.2}
+    .tile .actions{position:absolute; top:8px; inset-inline-end:8px; display:flex; gap:6px}
+    .iBtn{width:28px; height:28px; display:grid; place-items:center; border-radius:8px; border:1px solid rgba(255,255,255,.12); background:rgba(0,0,0,.15); backdrop-filter: blur(6px); cursor:pointer}
+    .iBtn:hover{filter:brightness(1.1)}
+    .addTile{border:1px dashed rgba(255,255,255,.25); background:transparent;}
+
+    footer{padding:18px; text-align:center; color:var(--muted); font-size:13px}
+    a{color:inherit}
+
+    dialog{border:1px solid rgba(255,255,255,.15); border-radius:16px; padding:0; background:var(--tile); color:var(--fg); width:min(520px, 96vw)}
+    .modalHead{display:flex; justify-content:space-between; align-items:center; padding:14px 16px; border-bottom:1px solid rgba(255,255,255,.1)}
+    .modalBody{padding:16px; display:grid; gap:12px}
+    .field{display:grid; gap:6px}
+    .field label{font-size:13px; color:var(--muted)}
+    .field input, .field select{padding:12px; border-radius:12px; background:var(--glass); border:1px solid rgba(255,255,255,.12); color:var(--fg)}
+    .modalActions{display:flex; justify-content:flex-end; gap:8px; padding:12px 16px; border-top:1px solid rgba(255,255,255,.1)}
+
+    .hint{font-size:12px; color:var(--muted)}
+    .hidden{display:none}
+  </style>
+</head>
+<body>
+  <div class="wrap" id="app">
+    <header>
+      <div class="logo">
+        <span class="mark">MAD</span>
+        <span class="clock" id="clock">--:--</span>
+      </div>
+      <div class="toolbar">
+        <button class="btn" id="btnSync" title="مزامنة من ملف ICONTEXT على GitHub">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 0-9 9"/><path d="M8 3v4h4"/></svg>
+          مزامنة
+        </button>
+        <button class="btn" id="btnImport" title="استيراد النسخة الاحتياطية (JSON)">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M4 19h16"/></svg>
+          استيراد
+        </button>
+        <button class="btn" id="btnExport" title="تصدير النسخة الاحتياطية (ICONTEXT/JSON)">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21V9"/><path d="m17 14-5-5-5 5"/><path d="M4 5h16"/></svg>
+          تصدير
+        </button>
+        <button class="btn" id="btnSettings" title="إعدادات">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09c.67 0 1.27-.38 1.51-1Z"/></svg>
+          إعدادات
+        </button>
+        <button class="btn" id="btnTheme" title="تبديل الوضع فاتح/داكن">
+          <svg class="icon" id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/></svg>
+          مظهر
+        </button>
+      </div>
+    </header>
+
+    <main>
+      <div class="center">
+        <div class="brand">
+          <h1 id="heroText">MAD</h1>
+          <small>صفحة بداية شخصية — شريط بحث Google + اختصارات غير محدودة (محليًا أو عبر ICONTEXT)</small>
+        </div>
+
+        <form id="searchForm" class="searchBox" action="https://www.google.com/search" method="GET" target="_blank" autocomplete="off">
+          <select id="engine" class="engine" title="اختيار محرك البحث">
+            <option value="google">Google</option>
+            <option value="images">Google Images</option>
+            <option value="maps">Google Maps</option>
+            <option value="youtube">YouTube</option>
+          </select>
+          <div class="search" role="search">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.3-4.3"/></svg>
+            <input id="q" name="q" type="search" placeholder="ابحث في Google…" autofocus />
+          </div>
+          <button class="go" type="submit">بحث</button>
+        </form>
+
+        <section>
+          <div class="grid" id="grid"></div>
+        </section>
+      </div>
+    </main>
+
+    <footer>
+      احفظ الاختصارات محليًا على هذا المتصفح أو في ملف <strong>ICONTEXT</strong> داخل مستودع GitHub الخاص بك للمزامنة بين الأجهزة.
+    </footer>
+  </div>
+
+  <!-- إضافة/تعديل اختصار -->
+  <dialog id="shortcutModal">
+    <div class="modalHead">
+      <strong id="modalTitle">اختصار جديد</strong>
+      <button class="iBtn" onclick="closeShortcutModal()" title="إغلاق"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+    </div>
+    <div class="modalBody">
+      <div class="field">
+        <label for="scTitle">العنوان</label>
+        <input id="scTitle" type="text" placeholder="مثال: MAD Perfume" />
+      </div>
+      <div class="field">
+        <label for="scURL">الرابط</label>
+        <input id="scURL" type="url" placeholder="https://example.com" />
+        <span class="hint">نضيف https:// تلقائيًا إذا نسيت.</span>
+      </div>
+      <div class="field">
+        <label for="scIcon">أيقونة (اختياري)</label>
+        <input id="scIcon" type="url" placeholder="https://example.com/favicon.ico" />
+        <span class="hint">إن تركتها فارغة سنجلب favicon للموقع تلقائيًا.</span>
+      </div>
+    </div>
+    <div class="modalActions">
+      <button class="btn" onclick="closeShortcutModal()">إلغاء</button>
+      <button class="btn" style="background:linear-gradient(90deg,var(--acc),var(--acc2)); color:#fff" id="saveShortcutBtn" type="button">حفظ</button>
+    </div>
+  </dialog>
+
+  <!-- إعدادات -->
+  <dialog id="settingsModal">
+    <div class="modalHead">
+      <strong>الإعدادات</strong>
+      <button class="iBtn" onclick="settingsModal.close()" title="إغلاق"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+    </div>
+    <div class="modalBody">
+      <div class="field">
+        <label for="heroInput">نص الشعار الكبير</label>
+        <input id="heroInput" type="text" placeholder="MAD" />
+      </div>
+      <div class="field">
+        <label for="bgInput">خلفية (رابط صورة اختياري)</label>
+        <input id="bgInput" type="url" placeholder="https://.../wallpaper.webp" />
+        <span class="hint">اتركه فارغًا لاستخدام التدرّج الافتراضي.</span>
+      </div>
+      <div class="field">
+        <label for="dirSelect">الاتجاه</label>
+        <select id="dirSelect">
+          <option value="rtl">من اليمين لليسار (RTL)</option>
+          <option value="ltr">من اليسار لليمين (LTR)</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="enginePref">محرك البحث الافتراضي</label>
+        <select id="enginePref">
+          <option value="google">Google</option>
+          <option value="images">Google Images</option>
+          <option value="maps">Google Maps</option>
+          <option value="youtube">YouTube</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="remoteInput">ملف الروابط على GitHub (URL أو مسار نسبي)</label>
+        <input id="remoteInput" type="text" placeholder="ICONTEXT" />
+        <span class="hint">مثال: ضع ملفًا باسم ICONTEXT في جذر المستودع المنشور على GitHub Pages، أو مسارًا نسبيًا مثل <code>data/ICONTEXT</code>.</span>
+      </div>
+    </div>
+    <div class="modalActions">
+      <button class="btn" id="resetBtn" title="إرجاع كل شيء للوضع الافتراضي">إعادة ضبط</button>
+      <button class="btn" style="background:linear-gradient(90deg,var(--acc),var(--acc2)); color:#fff" id="saveSettingsBtn">حفظ</button>
+    </div>
+  </dialog>
+
+  <input type="file" id="importFile" accept="application/json" hidden />
+
+  <script>
+    const LS_KEYS = { shortcuts: 'mad_shortcuts_v1', prefs: 'mad_prefs_v1' };
+    const DEFAULT_REMOTE_FILE = 'ICONTEXT'; // اسم الملف المقترح على GitHub
+
+    const app = document.getElementById('app');
+    const grid = document.getElementById('grid');
+    const q = document.getElementById('q');
+    const engineSel = document.getElementById('engine');
+    const searchForm = document.getElementById('searchForm');
+    const clockEl = document.getElementById('clock');
+
+    const shortcutModal = document.getElementById('shortcutModal');
+    const scTitle = document.getElementById('scTitle');
+    const scURL = document.getElementById('scURL');
+    const scIcon = document.getElementById('scIcon');
+    const saveShortcutBtn = document.getElementById('saveShortcutBtn');
+
+    const settingsModal = document.getElementById('settingsModal');
+    const heroText = document.getElementById('heroText');
+    const heroInput = document.getElementById('heroInput');
+    const bgInput = document.getElementById('bgInput');
+    const dirSelect = document.getElementById('dirSelect');
+    const enginePref = document.getElementById('enginePref');
+    const remoteInput = document.getElementById('remoteInput');
+
+    const btnSettings = document.getElementById('btnSettings');
+    const btnTheme = document.getElementById('btnTheme');
+    const themeIcon = document.getElementById('themeIcon');
+    const btnExport = document.getElementById('btnExport');
+    const btnImport = document.getElementById('btnImport');
+    const btnSync = document.getElementById('btnSync');
+    const importFile = document.getElementById('importFile');
+    const saveSettingsBtn = document.getElementById('saveSettingsBtn');
+    const resetBtn = document.getElementById('resetBtn');
+
+    let editId = null; // إذا كنا نحرر اختصارًا
+
+    function nowClock(){
+      const d = new Date();
+      const hh = String(d.getHours()).padStart(2,'0');
+      const mm = String(d.getMinutes()).padStart(2,'0');
+      clockEl.textContent = `${hh}:${mm}`;
+    }
+    setInterval(nowClock, 15000); nowClock();
+
+    function getPrefs(){
+      try{ return JSON.parse(localStorage.getItem(LS_KEYS.prefs)) || {}; }catch{ return {}; }
+    }
+    function savePrefs(p){ localStorage.setItem(LS_KEYS.prefs, JSON.stringify(p)); }
+
+    function getShortcuts(){
+      try{
+        const data = JSON.parse(localStorage.getItem(LS_KEYS.shortcuts));
+        if(Array.isArray(data) && data.length) return data;
+      }catch{}
+      return getDefaultShortcuts();
+    }
+    function saveShortcuts(list){ localStorage.setItem(LS_KEYS.shortcuts, JSON.stringify(list)); }
+
+    function getDefaultShortcuts(){
+      return [
+        {id: uid(), title:'MAD Perfume (IL)', url:'https://madperfume.co.il/', icon:''},
+        {id: uid(), title:'MAD Perfume (PS)', url:'https://madperfume.ps/', icon:''},
+        {id: uid(), title:'WhatsApp MAD', url:'https://wa.me/972000000000', icon:''},
+        {id: uid(), title:'GitHub (landing-pages)', url:'https://github.com/abomkdad/landing-pages', icon:''},
+        {id: uid(), title:'Netlify', url:'https://app.netlify.com/', icon:''},
+        {id: uid(), title:'Canva', url:'https://www.canva.com/', icon:''},
+        {id: uid(), title:'Meta Ads Manager', url:'https://business.facebook.com/adsmanager', icon:''},
+        {id: uid(), title:'TikTok Ads', url:'https://ads.tiktok.com/i18n', icon:''},
+        {id: uid(), title:'Google Ads', url:'https://ads.google.com/', icon:''},
+        {id: uid(), title:'Google Analytics', url:'https://analytics.google.com/', icon:''},
+        {id: uid(), title:'Google Drive', url:'https://drive.google.com/', icon:''},
+      ];
+    }
+
+    function uid(){ return 'id' + Math.random().toString(36).slice(2) + Date.now().toString(36); }
+
+    function normalizeURL(u){
+      if(!u) return '';
+      try{
+        if(!/^https?:\/\//i.test(u)) u = 'https://' + u;
+        const m = new URL(u);
+        return m.toString();
+      }catch{ return u; }
+    }
+
+    function getFaviconURL(u){
+      try{ const m = new URL(u); return m.origin + '/favicon.ico'; }catch{ return ''; }
+    }
+
+    function render(){
+      const list = getShortcuts();
+      grid.innerHTML = '';
+      list.forEach((item, index)=>{
+        const a = document.createElement('a');
+        a.href = item.url; a.target = '_blank'; a.rel='noopener';
+        a.className = 'tile'; a.setAttribute('draggable','true'); a.dataset.id = item.id; a.dataset.index = index;
+
+        a.addEventListener('dragstart', (e)=>{ e.dataTransfer.setData('text/plain', item.id); });
+        a.addEventListener('dragover', (e)=>{ e.preventDefault(); a.style.outline='2px dashed var(--acc)'; });
+        a.addEventListener('dragleave', ()=>{ a.style.outline=''; });
+        a.addEventListener('drop', (e)=>{ e.preventDefault(); a.style.outline=''; const draggedId = e.dataTransfer.getData('text/plain'); reorder(draggedId, item.id); });
+
+        const fav = document.createElement('div'); fav.className='fav';
+        const img = document.createElement('img'); img.alt=''; img.src = item.icon ? item.icon : getFaviconURL(item.url);
+        img.onerror = () => { img.src = 'data:image/svg+xml;utf8,' + encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect width="24" height="24" rx="6" fill="%23ddd"/></svg>`)}
+        fav.appendChild(img);
+
+        const label = document.createElement('div'); label.className='label'; label.textContent = item.title;
+
+        const actions = document.createElement('div'); actions.className='actions';
+        const editBtn = document.createElement('button'); editBtn.className='iBtn'; editBtn.type='button'; editBtn.title='تعديل';
+        editBtn.innerHTML = `<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5Z"/></svg>`;
+        editBtn.addEventListener('click', (e)=>{ e.preventDefault(); openEdit(item.id); });
+
+        const delBtn = document.createElement('button'); delBtn.className='iBtn'; delBtn.type='button'; delBtn.title='حذف';
+        delBtn.innerHTML = `<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>`;
+        delBtn.addEventListener('click', (e)=>{ e.preventDefault(); removeShortcut(item.id); });
+
+        actions.append(editBtn, delBtn);
+        a.append(fav, label, actions);
+        grid.appendChild(a);
+      });
+
+      // بطاقة إضافة
+      const add = document.createElement('button');
+      add.type='button'; add.className='tile addTile'; add.title='إضافة اختصار جديد';
+      add.innerHTML = `<div class="fav"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></div><div class="label">إضافة اختصار</div>`;
+      add.addEventListener('click', ()=> openAdd());
+      grid.appendChild(add);
+    }
+
+    function reorder(draggedId, targetId){
+      if(draggedId===targetId) return;
+      const list = getShortcuts();
+      const from = list.findIndex(i=>i.id===draggedId);
+      const to = list.findIndex(i=>i.id===targetId);
+      if(from<0||to<0) return;
+      const [moved] = list.splice(from,1);
+      list.splice(to,0,moved);
+      saveShortcuts(list); render();
+    }
+
+    function openAdd(){ editId = null; scTitle.value = ''; scURL.value = ''; scIcon.value = ''; document.getElementById('modalTitle').textContent = 'اختصار جديد'; shortcutModal.showModal(); setTimeout(()=> scTitle.focus(), 50); }
+    function openEdit(id){ const item = getShortcuts().find(x=>x.id===id); if(!item) return; editId = id; scTitle.value = item.title; scURL.value = item.url; scIcon.value = item.icon || ''; document.getElementById('modalTitle').textContent = 'تعديل الاختصار'; shortcutModal.showModal(); setTimeout(()=> scTitle.focus(), 50); }
+    function closeShortcutModal(){ shortcutModal.close(); }
+
+    saveShortcutBtn.addEventListener('click', ()=>{
+      const title = scTitle.value.trim();
+      let url = normalizeURL(scURL.value.trim());
+      const icon = scIcon.value.trim();
+      if(!title || !url){ alert('رجاءً اكتب العنوان والرابط.'); return; }
+      const list = getShortcuts();
+      if(editId){ const i = list.findIndex(x=>x.id===editId); if(i>-1){ list[i].title = title; list[i].url = url; list[i].icon = icon; } }
+      else{ list.push({id: uid(), title, url, icon}); }
+      saveShortcuts(list); render(); closeShortcutModal(); alert('تم الحفظ.');
+    });
+
+    function removeShortcut(id){ if(!confirm('حذف الاختصار؟')) return; const list = getShortcuts().filter(x=>x.id!==id); saveShortcuts(list); render(); }
+
+    // بحث
+    engineSel.addEventListener('change', ()=>{ const p = getPrefs(); p.engine = engineSel.value; savePrefs(p); });
+    searchForm.addEventListener('submit', (e)=>{ e.preventDefault(); const query = q.value.trim(); if(!query) { q.focus(); return; } const engine = engineSel.value; const url = buildSearchURL(engine, query); window.open(url, '_blank'); });
+
+    function buildSearchURL(engine, query){ const enc = encodeURIComponent(query); switch(engine){ case 'images': return `https://www.google.com/search?tbm=isch&q=${enc}`; case 'maps': return `https://www.google.com/maps/search/?api=1&query=${enc}`; case 'youtube': return `https://www.youtube.com/results?search_query=${enc}`; default: return `https://www.google.com/search?q=${enc}`; } }
+
+    // إعدادات وتهيئة أولية
+    function applyPrefs(){
+      const p = getPrefs();
+      if(p.theme==='light') document.documentElement.setAttribute('data-theme','light'); else document.documentElement.removeAttribute('data-theme');
+      heroText.textContent = p.hero || 'MAD'; heroInput.value = p.hero || '';
+      document.documentElement.dir = p.dir || 'rtl'; dirSelect.value = p.dir || 'rtl';
+      engineSel.value = p.engine || 'google'; enginePref.value = p.engine || 'google';
+      setBackground(p.bg || ''); bgInput.value = p.bg || '';
+      remoteInput.value = p.remote || DEFAULT_REMOTE_FILE;
+    }
+
+    function setBackground(url){
+      if(url){ document.body.style.background = `linear-gradient(180deg, var(--bg1), var(--bg2)), url('${url}') center/cover fixed`; }
+      else{
+        document.body.style.background = `radial-gradient(1200px 800px at 20% 10%, rgba(159,122,234,.15), transparent 60%), radial-gradient(1000px 700px at 80% 20%, rgba(90,169,255,.15), transparent 60%), linear-gradient(180deg, var(--bg1), var(--bg2))`;
+      }
+    }
+
+    btnSettings.addEventListener('click', ()=>{ const p = getPrefs(); heroInput.value = p.hero || ''; bgInput.value = p.bg || ''; dirSelect.value = p.dir || 'rtl'; enginePref.value = p.engine || 'google'; remoteInput.value = p.remote || DEFAULT_REMOTE_FILE; settingsModal.showModal(); });
+
+    btnTheme.addEventListener('click', ()=>{ const p = getPrefs(); p.theme = (p.theme==='light') ? 'dark' : 'light'; savePrefs(p); applyPrefs(); });
+
+    saveSettingsBtn.addEventListener('click', ()=>{ const p = getPrefs(); p.hero = heroInput.value.trim() || 'MAD'; p.bg = bgInput.value.trim(); p.dir = dirSelect.value; p.engine = enginePref.value; p.remote = remoteInput.value.trim() || DEFAULT_REMOTE_FILE; savePrefs(p); applyPrefs(); settingsModal.close(); });
+
+    resetBtn.addEventListener('click', ()=>{ if(!confirm('إرجاع الإعدادات والاختصارات للوضع الافتراضي؟')) return; localStorage.removeItem(LS_KEYS.prefs); localStorage.removeItem(LS_KEYS.shortcuts); applyPrefs(); render(); });
+
+    // تصدير/استيراد
+    btnExport.addEventListener('click', ()=>{
+      const data = { shortcuts: getShortcuts(), prefs: getPrefs(), exportedAt: new Date().toISOString() };
+      const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'ICONTEXT'; // اسم الملف الافتراضي
+      a.click(); URL.revokeObjectURL(a.href);
+    });
+
+    btnImport.addEventListener('click', ()=> importFile.click());
+    importFile.addEventListener('change', ()=>{
+      const file = importFile.files[0]; if(!file) return;
+      const reader = new FileReader();
+      reader.onload = ()=>{
+        try{
+          const data = JSON.parse(reader.result);
+          if(data.shortcuts) localStorage.setItem(LS_KEYS.shortcuts, JSON.stringify(data.shortcuts));
+          if(data.prefs) localStorage.setItem(LS_KEYS.prefs, JSON.stringify(data.prefs));
+          applyPrefs(); render(); alert('تم الاستيراد بنجاح.');
+        }catch(err){ alert('ملف غير صالح'); }
+      };
+      reader.readAsText(file);
+      importFile.value = '';
+    });
+
+    // مزامنة من ملف ICONTEXT على GitHub (قراءة فقط من جهة العميل)
+    btnSync.addEventListener('click', ()=> fetchRemote('merge')); // دمج بشكل افتراضي بدلاً من الاستبدال الكامل
+
+    function mergeShortcuts(localList, remoteList){
+      const byURL = new Map();
+      localList.forEach(s=>{ try{ byURL.set(new URL(s.url).href, s); }catch{ byURL.set(s.url, s); } });
+      remoteList.forEach(s=>{
+        try{
+          const key = new URL(s.url).href;
+          if(!byURL.has(key)) byURL.set(key, s);
+        }catch{
+          if(!byURL.has(s.url)) byURL.set(s.url, s);
+        }
+      });
+      return Array.from(byURL.values());
+    }
+
+    async function fetchRemote(mode){ // mode: 'merge' | 'override'
+      const p = getPrefs();
+      const path = p.remote || DEFAULT_REMOTE_FILE; // يقبل URL مطلق أو مسار نسبي
+      try{
+        const url = new URL(path, location.href).toString(); // يحلّ المسار النسبي على نفس الأصل
+        const res = await fetch(url, {cache:'no-store'});
+        if(!res.ok) throw new Error('HTTP '+res.status);
+        const data = await res.json();
+        const localShort = getShortcuts();
+        const remoteShort = Array.isArray(data.shortcuts) ? data.shortcuts : [];
+        let finalShort = localShort;
+        if(mode==='override'){ finalShort = remoteShort; }
+        else { finalShort = mergeShortcuts(localShort, remoteShort); }
+        saveShortcuts(finalShort);
+        if(data.prefs){ const merged = {...getPrefs(), ...data.prefs}; localStorage.setItem(LS_KEYS.prefs, JSON.stringify(merged)); }
+        applyPrefs(); render();
+        alert(mode==='override' ? 'تم الاستبدال من ICONTEXT.' : 'تم الدمج مع ICONTEXT.');
+      }catch(e){ console.error(e); alert('تعذر قراءة ملف ICONTEXT. تأكد من المسار والصلاحيات (CORS) وأنه JSON صحيح.'); }
+    }
+
+    // تهيئة
+    applyPrefs();
+    // محاولة أولية: إذا لا يوجد بيانات محلية، جرّب قراءة ICONTEXT تلقائيًا
+    if(!localStorage.getItem(LS_KEYS.shortcuts)){
+      fetchRemote(false).finally(()=>{ render(); q.focus(); });
+    }else{ render(); q.focus(); }
+  </script>
+</body>
+</html>

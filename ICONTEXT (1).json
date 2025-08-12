@@ -1,0 +1,85 @@
+{
+  "shortcuts": [
+    {
+      "id": "seed1",
+      "title": "MAD Perfume (IL)",
+      "url": "https://madperfume.co.il/",
+      "icon": ""
+    },
+    {
+      "id": "seed2",
+      "title": "MAD Perfume (PS)",
+      "url": "https://madperfume.ps/",
+      "icon": ""
+    },
+    {
+      "id": "seed3",
+      "title": "WhatsApp MAD",
+      "url": "https://wa.me/972000000000",
+      "icon": ""
+    },
+    {
+      "id": "seed4",
+      "title": "GitHub (landing-pages)",
+      "url": "https://github.com/abomkdad/landing-pages",
+      "icon": ""
+    },
+    {
+      "id": "seed5",
+      "title": "Netlify",
+      "url": "https://app.netlify.com/",
+      "icon": ""
+    },
+    {
+      "id": "seed6",
+      "title": "Canva",
+      "url": "https://www.canva.com/",
+      "icon": ""
+    },
+    {
+      "id": "seed7",
+      "title": "Meta Ads Manager",
+      "url": "https://business.facebook.com/adsmanager",
+      "icon": ""
+    },
+    {
+      "id": "seed8",
+      "title": "TikTok Ads",
+      "url": "https://ads.tiktok.com/i18n",
+      "icon": ""
+    },
+    {
+      "id": "seed9",
+      "title": "Google Ads",
+      "url": "https://ads.google.com/",
+      "icon": ""
+    },
+    {
+      "id": "seed10",
+      "title": "Google Analytics",
+      "url": "https://analytics.google.com/",
+      "icon": ""
+    },
+    {
+      "id": "seed11",
+      "title": "Google Drive",
+      "url": "https://drive.google.com/",
+      "icon": ""
+    },
+    {
+      "id": "idh9xytspde0cme7zo8a4",
+      "title": "https://abomkdad.github.io/whatssp-links-gen/",
+      "url": "https://abomkdad.github.io/whatssp-links-gen/",
+      "icon": ""
+    }
+  ],
+  "prefs": {
+    "theme": "dark",
+    "hero": "MAD",
+    "dir": "rtl",
+    "engine": "google",
+    "bg": "",
+    "remote": "ICONTEXT"
+  },
+  "exportedAt": "2025-08-12T03:35:46.548Z"
+}
